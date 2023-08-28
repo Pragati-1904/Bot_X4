@@ -4,4 +4,5 @@ WORKDIR /app
 ENV DEBIAN_FRONTEND=noninteractive
 COPY . .
 RUN apt -qq update && apt upgrade -y
+RUN pip3 install telethon
 CMD [ "python3", "Bot 4.py" ]
