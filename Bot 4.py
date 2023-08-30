@@ -10,12 +10,16 @@ API_HASH = 'eb06d4abfb49dc3eeb1aeb98ae0f581e'
 BOT_TOKEN = '6482350998:AAF05OkmabCsNPYr9me09exx4ij0svv6iVs'
 
 # Define your API key and API URL
-api_key = "2842e73e6ba0d1f033877d3dd6b994d6"
-api_url = "https://smmpanel.one/api/v2"
+#api_key = "2842e73e6ba0d1f033877d3dd6b994d6"
+#api_url = "https://smmpanel.one/api/v2"
 
 # SMMStone API credentials
 #api_key = 'd819a1f00c233199588f18d6b904216d'
 #api_url = 'https://smmstone.com/api/v2'
+
+# Yo Yo Media
+api_key = 'd4f94ae6c43bdb0a08fd3237ebbb8e55d38a76e5c65995d1ab0a69b721deccfd'
+api_url = 'https://yoyomedia.in/api/v2'
 
 
 try:
