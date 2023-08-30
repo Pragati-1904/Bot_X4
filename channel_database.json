@@ -9,8 +9,8 @@
     {
         "channel_id": -1001865747927,
         "channel_link": "https://t.me/View_5K_Fast",
-        "runs": 1,
+        "runs": 25,
         "interval": 1,
-        "quantity": 1000
+        "quantity": 200
     }
 ]
