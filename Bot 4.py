@@ -2,12 +2,15 @@ from telethon.sync import TelegramClient, events
 from telethon.tl import types
 import requests
 import json
+import asyncio
 
 
 # Replace with your own values
 API_ID = '6'
 API_HASH = 'eb06d4abfb49dc3eeb1aeb98ae0f581e'
 BOT_TOKEN = '6482350998:AAF05OkmabCsNPYr9me09exx4ij0svv6iVs'
+
+admin_user_ids = [2025667253]
 
 # Define your API key and API URL
 #api_key = "2842e73e6ba0d1f033877d3dd6b994d6"
@@ -17,7 +20,6 @@ BOT_TOKEN = '6482350998:AAF05OkmabCsNPYr9me09exx4ij0svv6iVs'
 #api_key = 'd819a1f00c233199588f18d6b904216d'
 #api_url = 'https://smmstone.com/api/v2'
 
-# Yo Yo Media
 api_key = 'd4f94ae6c43bdb0a08fd3237ebbb8e55d38a76e5c65995d1ab0a69b721deccfd'
 api_url = 'https://yoyomedia.in/api/v2'
 
@@ -33,16 +35,27 @@ print("Bot is Online")
 
 user_inputs = {}
 
+def is_admin(event):
+    return event.sender_id in admin_user_ids
+
 @client.on(events.NewMessage)
 async def handle_user_input(event):
     user_id = event.sender_id
     message = event.text
-    
+
+    #if user_id in ADMINS:
+
     if message.startswith('/add_channel'):
-        if user_id not in user_inputs:
-            user_inputs[user_id] = {}
-            user_inputs[user_id]['step'] = 'link'
-            await event.reply("Let's start adding a channel details.\nPlease provide the channel link:")
+        if is_admin(event): 
+              
+            if user_id not in user_inputs:
+                user_inputs[user_id] = {}
+                user_inputs[user_id]['step'] = 'link'
+                await event.reply("Let's start adding a channel details.\nPlease provide the channel link:")
+                pass
+        else:
+            
+            await event.reply("You are not authorized to use this command.")
 
     elif user_id in user_inputs:
         current_step = user_inputs[user_id]['step']
@@ -126,7 +139,7 @@ async def send_order(api_key, service_id, link, quantity, runs, interval):
     params = {
         "key": api_key,
         "action": "add",
-        "service": '169',
+        "service": '6441', #'4209',
         "link": link,
         "quantity": quantity,
         "runs": runs,
@@ -137,7 +150,9 @@ async def send_order(api_key, service_id, link, quantity, runs, interval):
     response = requests.get(api_url, params=params)
     print(response)
     order_data = response.json()
-    return order_data                 
+    print(order_data)
+    return order_data
+                     
 
 
 @client.on(events.NewMessage(incoming=True))
@@ -145,7 +160,7 @@ async def handle_new_post(event):
     for channel in channel_database:
         if channel['channel_id'] == event.chat_id:
             if event.original_update.message:
-                #post_link = f"https://t.me/{channel['channel_link'][8:]}/{event.original_update.message.id}"
+                
                 post_link = f"https://{channel['channel_link'][8:]}/{event.original_update.message.id}"
                 print(f"New post in channel: {channel['channel_link']}")
                 print(f"Post link: {post_link}")
@@ -155,14 +170,65 @@ async def handle_new_post(event):
                 quantity = channel['quantity']
                 runs = channel['runs']
                 interval = channel['interval']
-                
-                # Send order using the API
-                order_data = await send_order(api_key, service_id, post_link, quantity, runs, interval)
-                order_id = order_data.get('order')
-                if order_id:
-                    print(f"Order placed successfully. Order ID: {order_id}")
-                else:
-                    print("Failed to place order.")
 
+                #await asyncio.sleep(5)
+
+                #async def send_orders():
+                for _ in range(runs):
+                        order_data = await send_order(api_key, service_id, post_link, quantity, runs, interval)
+                        order_id = order_data.get('order')
+                        if order_id:
+                            print(f"Order placed successfully. Order ID: {order_id}")
+                        else:
+                            print("Failed to place order.")
+                
+                        await asyncio.sleep(interval)  # Wait for the specified interval before sending the next order
+
+@client.on(events.NewMessage)
+async def handle_user_commands(event):
+    user_id = event.sender_id
+    message = event.message.text.lower()
+
+    if message == '/orders':
+        if is_admin(event):  # Check if the user is an admin
+            orders_text = "Channel Orders:\n"
+            for idx, channel in enumerate(channel_database, start=1):
+                orders_text += (
+                    f"{idx}. Channel ID: {channel['channel_id']}\n"
+                    f"   Channel Link: {channel['channel_link']}\n"
+                    f"   Runs: {channel['runs']}\n"
+                    f"   Interval: {channel['interval']} seconds\n"
+                    f"   Quantity: {channel['quantity']}\n\n"
+                )
+            
+            await event.reply(orders_text)
+        else:
+            await event.reply("You are not authorized to use this command.")
+    
+    elif message.startswith('/rem_channel'):
+        if is_admin(event):  # Check if the user is an admin
+            try:
+                _, channel_idx = message.split(' ')
+                channel_idx = int(channel_idx)
+                if 1 <= channel_idx <= len(channel_database):
+                    removed_channel = channel_database.pop(channel_idx - 1)
+                    with open('channel_database.json', 'w') as file:
+                        json.dump(channel_database, file, indent=4)
+                    await event.reply(f"Channel ID {removed_channel['channel_id']} has been removed from the database.")
+                else:
+                    await event.reply("Invalid channel index. Please provide a valid index.")
+            except ValueError:
+                await event.reply("Invalid command format. Please use /rem_channel <index>.")
+        else:
+            await event.reply("You are not authorized to use this command.")
+
+    elif message.startswith('/start'):
+        await event.reply("Welcome to the View bot Server ! You can use the following commands:\n"
+                          "/add_channel - Add a channel to the database\n"
+                          "/orders - View channel orders\n"
+                          "/rem_channel - Remove a channel from the database (Admins only)\n")
+        return  # Stop processing further commands               
+                
 print("Bot is running...")
+#asyncio.run(main())
 client.run_until_disconnected()
