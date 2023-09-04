@@ -13,15 +13,15 @@ BOT_TOKEN = '6482350998:AAF05OkmabCsNPYr9me09exx4ij0svv6iVs'
 admin_user_ids = [2025667253]
 
 # Define your API key and API URL
-#api_key = "2842e73e6ba0d1f033877d3dd6b994d6"
-#api_url = "https://smmpanel.one/api/v2"
+api_key = "2842e73e6ba0d1f033877d3dd6b994d6"
+api_url = "https://smmpanel.one/api/v2"
 
 # SMMStone API credentials
 #api_key = 'd819a1f00c233199588f18d6b904216d'
 #api_url = 'https://smmstone.com/api/v2'
 
-api_key = 'd4f94ae6c43bdb0a08fd3237ebbb8e55d38a76e5c65995d1ab0a69b721deccfd'
-api_url = 'https://yoyomedia.in/api/v2'
+#api_key = 'd4f94ae6c43bdb0a08fd3237ebbb8e55d38a76e5c65995d1ab0a69b721deccfd'
+#api_url = 'https://yoyomedia.in/api/v2'
 
 
 try:
@@ -139,7 +139,7 @@ async def send_order(api_key, service_id, link, quantity, runs, interval):
     params = {
         "key": api_key,
         "action": "add",
-        "service": '6441', #'4209',
+        "service": '169', #'4209',
         "link": link,
         "quantity": quantity,
         "runs": runs,
