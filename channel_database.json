@@ -1,16 +1,16 @@
 [
     {
-        "channel_id": -1001290699524,
-        "channel_link": "https://t.me/Fake_View_500",
-        "runs": 18,
-        "interval": 1,
+        "channel_id": -1001800724028,
+        "channel_link": "https://t.me/sabkaview",
+        "runs": 30,
+        "interval": 60,
         "quantity": 300
     },
     {
-        "channel_id": -1001865747927,
-        "channel_link": "https://t.me/View_5K_Fast",
-        "runs": 25,
-        "interval": 1,
-        "quantity": 200
+        "channel_id":  -1001889548865,
+        "channel_link": "https://t.me/randibaz3",
+        "runs": 50,
+        "interval": 60,
+        "quantity": 100
     }
 ]
