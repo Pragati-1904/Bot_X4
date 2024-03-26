@@ -1,16 +1,2 @@
 [
-    {
-        "channel_id": -1001800724028,
-        "channel_link": "https://t.me/sabkaview",
-        "runs": 30,
-        "interval": 60,
-        "quantity": 300
-    },
-    {
-        "channel_id":  -1001889548865,
-        "channel_link": "https://t.me/randibaz3",
-        "runs": 50,
-        "interval": 60,
-        "quantity": 100
-    }
 ]
