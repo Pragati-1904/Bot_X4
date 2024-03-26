@@ -8,21 +8,20 @@ import asyncio
 # Replace with your own values
 API_ID = '6'
 API_HASH = 'eb06d4abfb49dc3eeb1aeb98ae0f581e'
-BOT_TOKEN = '6482350998:AAF05OkmabCsNPYr9me09exx4ij0svv6iVs'
+BOT_TOKEN =  '6365986349:AAFqRuN80v7RoiYALz79CpF9a8g8tGy-63g'   #'6482350998:AAF05OkmabCsNPYr9me09exx4ij0svv6iVs'
 
 admin_user_ids = [2025667253]
 
 # Define your API key and API URL
-api_key = "2842e73e6ba0d1f033877d3dd6b994d6"
-api_url = "https://smmpanel.one/api/v2"
+#api_key = "2842e73e6ba0d1f033877d3dd6b994d6"
+#api_url = "https://smmpanel.one/api/v2"
 
 # SMMStone API credentials
-#api_key = 'd819a1f00c233199588f18d6b904216d'
-#api_url = 'https://smmstone.com/api/v2'
+api_key = 'd819a1f00c233199588f18d6b904216d'
+api_url = 'https://smmstone.com/api/v2'
 
-#api_key = 'd4f94ae6c43bdb0a08fd3237ebbb8e55d38a76e5c65995d1ab0a69b721deccfd'
-#api_url = 'https://yoyomedia.in/api/v2'
-
+#api_key = '0a4e84376a6ace254c9117dacd4a37c1'
+#api_url = 'https://resellerprovider.ru/api/v2'
 
 try:
     with open('channel_database.json', 'r') as file:
@@ -42,6 +41,14 @@ def is_admin(event):
 async def handle_user_input(event):
     user_id = event.sender_id
     message = event.text
+
+    if message == '/cancel':
+        if user_id in user_inputs:
+            del user_inputs[user_id]
+            await event.reply("Process has been canceled.")
+        else:
+            await event.reply("No on-going process to cancel.")
+        return  # Stop processing further commands
 
     #if user_id in ADMINS:
 
@@ -139,7 +146,7 @@ async def send_order(api_key, service_id, link, quantity, runs, interval):
     params = {
         "key": api_key,
         "action": "add",
-        "service": '169', #'4209',
+        "service": '4520', #'4209',
         "link": link,
         "quantity": quantity,
         "runs": runs,
@@ -158,7 +165,7 @@ async def send_order(api_key, service_id, link, quantity, runs, interval):
 @client.on(events.NewMessage(incoming=True))
 async def handle_new_post(event):
     for channel in channel_database:
-        if channel['channel_id'] == event.chat_id:
+        if channel.get('channel_id') == event.chat_id:
             if event.original_update.message:
                 
                 post_link = f"https://{channel['channel_link'][8:]}/{event.original_update.message.id}"
@@ -193,13 +200,16 @@ async def handle_user_commands(event):
         if is_admin(event):  # Check if the user is an admin
             orders_text = "Channel Orders:\n"
             for idx, channel in enumerate(channel_database, start=1):
-                orders_text += (
-                    f"{idx}. Channel ID: {channel['channel_id']}\n"
-                    f"   Channel Link: {channel['channel_link']}\n"
-                    f"   Runs: {channel['runs']}\n"
-                    f"   Interval: {channel['interval']} seconds\n"
-                    f"   Quantity: {channel['quantity']}\n\n"
-                )
+                try:
+                    orders_text += (
+                        f"{idx}. Channel ID: {channel['channel_id']}\n"
+                        f"   Channel Link: {channel['channel_link']}\n"
+                        f"   Runs: {channel['runs']}\n"
+                        f"   Interval: {channel['interval']} seconds\n"
+                        f"   Quantity: {channel['quantity']}\n\n"
+                    )
+                except KeyError as e:
+                    print(f"Error in channel data: {e}")    
             
             await event.reply(orders_text)
         else:
@@ -230,5 +240,4 @@ async def handle_user_commands(event):
         return  # Stop processing further commands               
                 
 print("Bot is running...")
-#asyncio.run(main())
 client.run_until_disconnected()
