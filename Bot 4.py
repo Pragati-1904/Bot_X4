@@ -8,7 +8,7 @@ import asyncio
 # Replace with your own values
 API_ID = '6'
 API_HASH = 'eb06d4abfb49dc3eeb1aeb98ae0f581e'
-BOT_TOKEN =  '6365986349:AAFqRuN80v7RoiYALz79CpF9a8g8tGy-63g'   #'6482350998:AAF05OkmabCsNPYr9me09exx4ij0svv6iVs'
+BOT_TOKEN =  '7558486828:AAE2QjJC3CHKCvi9rwwuA4YtMF7Cr0tR-8o'   #'6482350998:AAF05OkmabCsNPYr9me09exx4ij0svv6iVs'
 
 admin_user_ids = [2025667253]
 
