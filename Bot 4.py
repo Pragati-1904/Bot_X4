@@ -17,7 +17,7 @@ admin_user_ids = [5645704474]
 #api_url = "https://smmpanel.one/api/v2"
 
 # SMMStone API credentials
-api_key = 'd819a1f00c233199588f18d6b904216d'
+api_key = 'b9d7981714649e36815ed17095d3fefd'
 api_url = 'https://smmstone.com/api/v2'
 
 #api_key = '0a4e84376a6ace254c9117dacd4a37c1'
