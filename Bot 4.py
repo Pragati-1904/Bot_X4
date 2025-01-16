@@ -10,7 +10,7 @@ API_ID = '6'
 API_HASH = 'eb06d4abfb49dc3eeb1aeb98ae0f581e'
 BOT_TOKEN =  '7558486828:AAE2QjJC3CHKCvi9rwwuA4YtMF7Cr0tR-8o'   #'6482350998:AAF05OkmabCsNPYr9me09exx4ij0svv6iVs'
 
-admin_user_ids = [2025667253]
+admin_user_ids = [5645704474]
 
 # Define your API key and API URL
 #api_key = "2842e73e6ba0d1f033877d3dd6b994d6"
