@@ -153,12 +153,27 @@ async def send_order(api_key, service_id, link, quantity, runs, interval):
         "interval": interval
     }
     
-    # Send the API request
-    response = requests.get(api_url, params=params)
-    print(response)
-    order_data = response.json()
-    print(order_data)
-    return order_data
+    try:
+        response = requests.get(api_url, params=params, timeout=10)
+        print(f"Request URL: {response.url}")
+        print(f"Status Code: {response.status_code}")
+        print(f"Raw Response: {response.text}")
+
+        # Ensure response status code is OK
+        response.raise_for_status()
+
+        # Parse JSON response
+        order_data = response.json()
+        if "order" in order_data:
+            return {"success": True, "order_id": order_data["order"]}
+        else:
+            return {"success": False, "error": "No 'order' key in response"}
+    except requests.exceptions.RequestException as e:
+        print(f"API Request Error: {e}")
+        return {"success": False, "error": str(e)}
+    except json.JSONDecodeError:
+        print(f"Error: Failed to decode JSON. Raw response: {response.text}")
+        return {"success": False, "error": "Invalid JSON response"}
                      
 
 
@@ -182,14 +197,12 @@ async def handle_new_post(event):
 
                 #async def send_orders():
                 for _ in range(runs):
-                        order_data = await send_order(api_key, service_id, post_link, quantity, runs, interval)
-                        order_id = order_data.get('order')
-                        if order_id:
-                            print(f"Order placed successfully. Order ID: {order_id}")
-                        else:
-                            print("Failed to place order.")
-                
-                        await asyncio.sleep(interval)  # Wait for the specified interval before sending the next order
+                    order_result = await send_order(api_key, service_id, post_link, quantity, runs, interval)
+                    if order_result.get("success"):
+                        print(f"Order placed successfully. Order ID: {order_result['order_id']}")
+                    else:
+                        print(f"Failed to place order. Error: {order_result['error']}")
+                    await asyncio.sleep(interval)  # Wait for the specified interval before sending the next order
 
 @client.on(events.NewMessage)
 async def handle_user_commands(event):
